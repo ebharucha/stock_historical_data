@@ -4,6 +4,7 @@ import yfinance as yf
 import pandas as pd
 from datetime import datetime
 import sys
+import os
 
 def get_valid_date(prompt):
     """Prompts user for a date and validates the format."""
@@ -59,17 +60,23 @@ def download_historical_data():
             return
 
         # Save to file
+        data_dir = "data"
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+
         filename = f"{symbol}_data_{start_date}_to_{end_date}"
         
         if file_format == 'csv':
             filename += ".csv"
-            df.to_csv(filename)
+            filepath = os.path.join(data_dir, filename)
+            df.to_csv(filepath)
         else:
             filename += ".xlsx"
+            filepath = os.path.join(data_dir, filename)
             # Requires openpyxl
-            df.to_excel(filename)
+            df.to_excel(filepath)
 
-        print(f"Success! Data saved to: {filename}")
+        print(f"Success! Data saved to: {filepath}")
 
     except Exception as e:
         print(f"An error occurred: {e}")
